@@ -12,23 +12,35 @@ let io = socketIO(server);
 
 app.use(express.static(pulbicPath));
 // socket.emit send to 1 person
-// io.emit send it to every person
-io.on('connect', (socket) => {
+// io.emit send it to every person &
+io.on('connection', (socket) => {
     console.log('new user connected');
-
-    socket.on('createMessage', function (createMessage) {
-        console.log('createMessage', createMessage)
-        io.emit('newMessage', {
-            from: createMessage.from,
-            text: createMessage.text,
+        //Die Person die NEU beigetreten ist bekommt diese message.
+        socket.emit('newMessage', {
+            from: 'Admin',
+            text: 'Welcome to the chat app',
             createdAt: new Date().getTime()
         });
+        //Alle Personen die bereits beigetreten sind bekommen eine Nachricht wenn eine neue Person beigetreten ist.
+        socket.broadcast.emit('newMessage', {
+            from: 'Admin',
+            text: 'New user joined the chatroom',
+            createdAt: new Date().getTime()
+        });
+        //Skellet für createMessage => Man kann eine Nachricht erstellen und wird unmittelbar an alle anwesenden Personen geschickt.
+        socket.on('createMessage', (createMessage) => {
+            console.log('createMessage', createMessage);
+            io.emit('newMessage', {
+              from: createMessage.from,
+              text: createMessage.text,
+              createdAt: new Date().getTime()
+            });
     });
-    
+    //disconnect Nachricht wenn jemand die Seite etc. verlassen hat.
     socket.on('disconnect', () => {
         console.log('user disconected from server')
     });
-})
+});
 
 
 
