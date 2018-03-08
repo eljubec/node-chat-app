@@ -3,22 +3,10 @@
 <html>
     <head>
         <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/index.js"></script>
         <meta charset="utf-8">
     </head>
     <body>
-        <p style="color:lightcoral">
-            welcome to the chat app
-        </p>
-        <script>
-            let socket = io();
-
-            socket.on('connect', () => {
-                console.log('Connected to server')
-            });
-            socket.on('disconnect', () => {
-                console.log('disconected from server')
-            });
-            
-        </script>
+        <p style="color:lightcoral">welcome to the chat app</p>
     </body>
 </html>

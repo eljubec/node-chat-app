@@ -11,16 +11,30 @@ let server = http.createServer(app);
 let io = socketIO(server);
 
 app.use(express.static(pulbicPath));
-
-
+// socket.emit send to 1 person
+// io.emit send it to every person
 io.on('connect', (socket) => {
     console.log('new user connected');
 
+    socket.on('createMessage', function (createMessage) {
+        console.log('createMessage', createMessage)
+        io.emit('newMessage', {
+            from: createMessage.from,
+            text: createMessage.text,
+            createdAt: new Date().getTime()
+        });
+    });
+    
     socket.on('disconnect', () => {
         console.log('user disconected from server')
     });
-    socket.on('')
-});
+})
+
+
+
+
+
+
 
 
 
