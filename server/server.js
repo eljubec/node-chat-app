@@ -26,7 +26,7 @@ socket.broadcast.emit('newMessage', generateMessage('Admin', 'new USER joined'))
 socket.on('createMessage', (createMessage) => {
     console.log('createMessage', createMessage);
     io.emit('newMessage', generateMessage(createMessage.from, createMessage.text));
-    });
+});
     
 //disconnect Nachricht wenn jemand die Seite etc. verlassen hat.
 socket.on('disconnect', () => {
