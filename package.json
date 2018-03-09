@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "SET \"NODE_ENV = test \" && mocha server/**/*.test.js",
+    "t-w": "nodemon --exec \"npm test\""
   },
   "engines": {
     "node": "v9.3.0"
@@ -16,5 +17,9 @@
     "express": "^4.16.2",
     "hbs": "^4.0.1",
     "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "expect": "^22.4.0",
+    "mocha": "^3.0.2"
   }
 }
