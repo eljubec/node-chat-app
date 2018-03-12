@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message')
+const {generateMessage, generateLocationMessage} = require('./utils/message')
 const pulbicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 let app = express();
@@ -23,9 +23,14 @@ socket.emit('newMessage', generateMessage('Admin', 'welcome to the chat app'));
 socket.broadcast.emit('newMessage', generateMessage('Admin', 'new USER joined'));
 
 //Skellet für createMessage => Man kann eine Nachricht erstellen und wird unmittelbar an alle anwesenden Personen geschickt.
-socket.on('createMessage', (createMessage) => {
+socket.on('createMessage', (createMessage, callback) => {
     console.log('createMessage', createMessage);
     io.emit('newMessage', generateMessage(createMessage.from, createMessage.text));
+    callback();
+});
+
+socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
 });
     
 //disconnect Nachricht wenn jemand die Seite etc. verlassen hat.
