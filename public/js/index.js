@@ -3,18 +3,20 @@ socket.on('connect', function () {
     console.log('Connected to server');
 
     socket.on('newMessage', (newMessage) => {
-        console.log('newMessage', newMessage)
+        let formattedTime = moment(newMessage.createdAt).format('LT');
+
         let li = $('<li></li>');
-        li.text(`${newMessage.from}: ${newMessage.text}`);
+        li.text(`${newMessage.from} ${formattedTime}: ${newMessage.text}`);
 
         $('#messages').append(li)
     });
 
     socket.on('newLocationMessage', function (newLocationMessage) {
+        let formattedTime = moment(newLocationMessage.createdAt).format('LT');
         let li = $('<li></li>');
-        let a = $('<a target="_blank">Current Location</a>');
+        let a = $(`<a target="_blank"> Current Location</a>`);
 
-        li.text(`${newLocationMessage.from}: `);
+        li.text(`${newLocationMessage.from}, ${formattedTime}: `);
         a.attr('href', newLocationMessage.url);
         li.append(a);
         $('#messages').append(li)
@@ -61,7 +63,7 @@ $(document).ready(function () {
                 longitude: position.coords.longitude
             });
         }, function () {
-            locationButton.removeAttr('disabled')
+            locationButton.removeAttr('disabled').text('Send location');
             alert('Unable to fech location.')
         });
     });
