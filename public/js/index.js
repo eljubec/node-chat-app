@@ -26,8 +26,8 @@ socket.on('connect', function () {
         let formattedTime = moment(newLocationMessage.createdAt).format('LT');
         let template = $('#location-message-template').html();
         let html = Mustache.render(template, {
-            from: newLocationMessage.from,
             url: newLocationMessage.url,
+            from: newLocationMessage.from,
             createdAt: formattedTime
         });
 

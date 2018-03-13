@@ -11,7 +11,7 @@ let generateMessage = (from, text) => {
 let generateLocationMessage = (from, latitude, longitude) => {
     return {
         from,
-        url: `https://www.google.com/maps?q=${latitude},${longitude}`,
+        url: `https://maps.google.com/maps?q=${latitude},${longitude}&hl=es;z=14&output=embed`,
         createdAt: moment().valueOf()
     };
 };
