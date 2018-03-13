@@ -1,10 +1,26 @@
 $(document).ready(function () {
 
+function scrollToBottom() {
+    //selectors
+    let messages = $('#messages');
+    let newMessage = messages.children('li:last-child')
+    //heights
+    let clientHeight = messages.prop('clientHeight');
+    let scrollTop = messages.prop('scrollTop');
+    let scrollHeight = messages.prop('scrollHeight');
+    let newMessageHeight = newMessage.innerHeight();
+    let lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight>= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 let socket = io();
 socket.on('connect', function () {
     console.log('Connected to server');
 
-    socket.on('newMessage', (newMessage) => {
+    socket.on('newMessage', function (newMessage){
         let formattedTime = moment(newMessage.createdAt).format('LT');
         let template = $('#message-template').html();
         let html = Mustache.render(template, {
@@ -14,6 +30,7 @@ socket.on('connect', function () {
         });
 
         $('#messages').append(html);
+        scrollToBottom();
 
 
         // let li = $('<li></li>');
@@ -32,6 +49,7 @@ socket.on('connect', function () {
         });
 
         $('#messages').append(html);
+        scrollToBottom();
     });
 
     socket.on('disconnect', function () {
