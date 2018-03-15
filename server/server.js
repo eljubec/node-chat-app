@@ -39,14 +39,20 @@ socket.on('join', (params, callback) => {
 
 
 //Skellet für createMessage => Man kann eine Nachricht erstellen und wird unmittelbar an alle anwesenden Personen geschickt.
-socket.on('createMessage', (createMessage, callback) => {
-    console.log('createMessage', createMessage);
-    io.emit('newMessage', generateMessage(createMessage.from, createMessage.text));
+socket.on('createMessage', (createMessage, callback, params) => {
+    let user = users.getUser(socket.id);
+
+    if (user && isRealString(createMessage.text)) {
+        io.to(user.room).emit('newMessage', generateMessage(user.name, createMessage.text));
+    }
+
     callback();
 });
 
 socket.on('createLocationMessage', (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    let user = users.getUser(socket.id);
+
+    io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
 });
     
 //disconnect Nachricht wenn jemand die Seite etc. verlassen hat.
