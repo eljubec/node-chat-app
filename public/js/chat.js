@@ -13,12 +13,36 @@ function scrollToBottom() {
 
     if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight>= scrollHeight) {
         messages.scrollTop(scrollHeight);
-    }
-}
+    };
+};
 
 let socket = io();
-socket.on('connect', function () {
-    console.log('Connected to server');
+    socket.on('connect', function () {
+        let params = $.deparam(window.location.search);
+
+        socket.emit('join', params, function (err) {
+            if(err) {
+                alert(err)
+                window.location.href = '/'
+            } else {
+                console.log('No error');
+            }
+        });
+    });
+
+    socket.on('disconnect', function () {
+        console.log('disconected from server');
+    });
+
+    socket.on('updateUserList', function (users) {
+        let ol = $('<ol></ol>');
+
+        users.forEach(function (user) {
+            ol.append($('<li></li>').text(user));
+        });
+
+        $('#users').html(ol);
+    });
 
     socket.on('newMessage', function (newMessage){
         let formattedTime = moment(newMessage.createdAt).format('LT');
@@ -31,12 +55,6 @@ socket.on('connect', function () {
 
         $('#messages').append(html);
         scrollToBottom();
-
-
-        // let li = $('<li></li>');
-        // li.text(`${newMessage.from} ${formattedTime}: ${newMessage.text}`);
-
-        // $('#messages').append(li)
     });
 
     socket.on('newLocationMessage', function (newLocationMessage) {
@@ -51,12 +69,6 @@ socket.on('connect', function () {
         $('#messages').append(html);
         scrollToBottom();
     });
-
-    socket.on('disconnect', function () {
-        console.log('disconected from server');
-        });
-    });
-
 
     $('#message-form').on('submit', function (e) {
 
@@ -85,7 +97,7 @@ socket.on('connect', function () {
                 setTimeout(function(){
                     locationButton.removeAttr('disabled').text('Send location');
                 }, 1300);
-            }
+            };
             sendLocationTimeOut();
             socket.emit('createLocationMessage', {
                 latitude: position.coords.latitude,
